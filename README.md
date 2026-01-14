@@ -32,7 +32,7 @@ That's it! Everything else is containerized.
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:n3rdysouth/phpcraps.git
 cd phpcraps
 ```
 
