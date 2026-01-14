@@ -334,6 +334,11 @@ docker-compose up -d --build
 - **Deployment**: Docker + Docker Compose
 - **Process Manager**: Supervisor
 
+## Credits
+
+Created by **Brandon DuBois** / **Nerdy South Inc**
+[nerdysouthinc.com](https://nerdysouthinc.com)
+
 ## License
 
 Open source - available for educational purposes.
