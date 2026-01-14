@@ -1,0 +1,66 @@
+# Caddyfile for PHP Craps Game
+# Single Caddy instance handles both HTTP and WebSocket on port 8000
+
+localhost:8000 {
+    # Serve static files and PHP from the public directory
+    root * public
+
+    # WebSocket proxy - MUST come before php_fastcgi
+    # Forward WebSocket connections to the PHP WebSocket server on 8080
+    @websocket {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @websocket localhost:8080
+
+    # Handle PHP files (FastCGI)
+    php_fastcgi localhost:9000 {
+        # If using Unix socket instead: unix//var/run/php-fpm.sock
+    }
+
+    # Enable file server for static assets
+    file_server
+
+    # Logging
+    log {
+        output stdout
+        level INFO
+    }
+
+    # Enable compression
+    encode gzip
+
+    # Security headers
+    header {
+        # Prevent MIME type sniffing
+        X-Content-Type-Options "nosniff"
+        # Enable XSS protection
+        X-XSS-Protection "1; mode=block"
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+    }
+}
+
+# Alternative configuration for production with domain
+# Replace example.com with your actual domain
+#
+# example.com {
+#     root * /var/www/phpcraps/public
+#
+#     php_fastcgi unix//var/run/php-fpm.sock
+#
+#     @websocket {
+#         header Connection Upgrade
+#         header Upgrade websocket
+#     }
+#     reverse_proxy @websocket localhost:8080
+#
+#     file_server
+#
+#     encode gzip
+#
+#     # Automatic HTTPS with Let's Encrypt
+#     tls {
+#         # Caddy will automatically obtain and renew certificates
+#     }
+# }

@@ -1,0 +1,44 @@
+services:
+  # PHP-FPM + WebSocket Server
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: phpcraps-php
+    ports:
+      - "8080:8080"  # WebSocket server port
+    volumes:
+      - ./database:/var/www/html/database
+    networks:
+      - phpcraps
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "php", "-v"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Caddy Web Server
+  caddy:
+    image: caddy:2-alpine
+    container_name: phpcraps-caddy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./public:/var/www/html/public
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - phpcraps
+    depends_on:
+      - php
+    restart: unless-stopped
+
+networks:
+  phpcraps:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

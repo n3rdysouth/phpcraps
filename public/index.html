@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Craps Table - Live Casino</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Join Game Modal -->
+    <div id="join-modal" class="modal">
+        <div class="modal-content">
+            <h2>Welcome to the Craps Table</h2>
+            <input type="text" id="player-name-input" placeholder="Enter your name" maxlength="20">
+            <div class="role-selection">
+                <label>
+                    <input type="radio" name="role" value="player" checked>
+                    <span>🎲 Play</span>
+                </label>
+                <label>
+                    <input type="radio" name="role" value="spectator">
+                    <span>👁️ Watch</span>
+                </label>
+            </div>
+            <button id="join-btn" class="btn btn-primary">Join Table</button>
+        </div>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="top-bar hidden" id="top-bar">
+        <div class="casino-name">CASINO ROYALE</div>
+        <div class="player-info">
+            <span class="player-name-display" id="player-name"></span>
+            <span class="chips-display">
+                <span class="chip-icon">🪙</span>
+                $<span id="player-bankroll">1000</span>
+            </span>
+        </div>
+        <div class="game-info">
+            <span class="status-label">Phase:</span> <span id="game-phase" class="status-value">COME OUT</span>
+            <span class="separator">|</span>
+            <span class="status-label">Point:</span> <span id="game-point" class="status-value point-display">OFF</span>
+            <span class="separator">|</span>
+            <span class="status-label">Shooter:</span> <span id="shooter-name" class="status-value">-</span>
+        </div>
+    </div>
+
+    <!-- Main Game Area -->
+    <div id="game-area" class="hidden">
+        <!-- Left Column -->
+        <div class="left-column">
+            <!-- Dice Roll Controls -->
+            <div class="dice-roll-controls">
+                <!-- Timer Display -->
+                <div class="timer-display" id="timer-display">
+                    <div class="timer-label" id="timer-label">TIME TO ROLL</div>
+                    <div class="timer-value" id="timer-value">20</div>
+                </div>
+
+                <div class="dice-display">
+                    <div class="die" id="die1">
+                        <div class="die-face">
+                            <span class="pip"></span>
+                        </div>
+                    </div>
+                    <div class="die" id="die2">
+                        <div class="die-face">
+                            <span class="pip"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="roll-total" id="dice-total">-</div>
+                <button id="roll-btn" class="roll-button" disabled>
+                    <span class="dice-emoji">🎲</span>
+                    ROLL DICE
+                </button>
+            </div>
+
+            <!-- Main Craps Table -->
+            <div class="craps-table-container">
+                <div class="craps-table">
+                    <!-- Left Section -->
+                    <div class="table-section left-section">
+                        <div class="bet-area dont-pass" data-bet="dont_pass">
+                            <div class="bet-label">DON'T PASS BAR</div>
+                            <div class="bet-subtext">12</div>
+                            <div class="bet-chips-container"></div>
+                        </div>
+                        <div class="bet-area dont-come" data-bet="dont_come">
+                            <div class="bet-label">DON'T COME</div>
+                            <div class="bet-subtext">BAR 12</div>
+                            <div class="bet-chips-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Center Section -->
+                    <div class="table-section center-section">
+                        <div class="place-bets-row">
+                            <div class="place-bet" data-bet="place_4" data-number="4">
+                                <div class="place-number">4</div>
+                                <div class="place-payout">9:5</div>
+                                <div class="bet-chips-container"></div>
+                            </div>
+                            <div class="place-bet" data-bet="place_5" data-number="5">
+                                <div class="place-number">5</div>
+                                <div class="place-payout">7:5</div>
+                                <div class="bet-chips-container"></div>
+                            </div>
+                            <div class="place-bet" data-bet="place_6" data-number="6">
+                                <div class="place-number">6</div>
+                                <div class="place-payout">7:6</div>
+                                <div class="bet-chips-container"></div>
+                            </div>
+                            <div class="place-bet" data-bet="place_8" data-number="8">
+                                <div class="place-number">8</div>
+                                <div class="place-payout">7:6</div>
+                                <div class="bet-chips-container"></div>
+                            </div>
+                            <div class="place-bet" data-bet="place_9" data-number="9">
+                                <div class="place-number">9</div>
+                                <div class="place-payout">7:5</div>
+                                <div class="bet-chips-container"></div>
+                            </div>
+                            <div class="place-bet" data-bet="place_10" data-number="10">
+                                <div class="place-number">10</div>
+                                <div class="place-payout">9:5</div>
+                                <div class="bet-chips-container"></div>
+                            </div>
+                        </div>
+                        <div class="bet-area come-area" data-bet="come">
+                            <div class="bet-label">COME</div>
+                            <div class="bet-chips-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Section - Proposition Bets -->
+                    <div class="table-section right-section">
+                        <div class="proposition-container">
+                            <div class="prop-title">PROP BETS</div>
+                            <div class="hardways-section">
+                                <div class="hardways-title">HARDWAYS</div>
+                                <div class="hardways-grid">
+                                    <div class="prop-bet hardway" data-bet="hardway_4">
+                                        <div class="prop-label">HARD 4</div>
+                                        <div class="dice-combo">2-2</div>
+                                        <div class="prop-payout">7:1</div>
+                                        <div class="bet-chips-container"></div>
+                                    </div>
+                                    <div class="prop-bet hardway" data-bet="hardway_6">
+                                        <div class="prop-label">HARD 6</div>
+                                        <div class="dice-combo">3-3</div>
+                                        <div class="prop-payout">9:1</div>
+                                        <div class="bet-chips-container"></div>
+                                    </div>
+                                    <div class="prop-bet hardway" data-bet="hardway_8">
+                                        <div class="prop-label">HARD 8</div>
+                                        <div class="dice-combo">4-4</div>
+                                        <div class="prop-payout">9:1</div>
+                                        <div class="bet-chips-container"></div>
+                                    </div>
+                                    <div class="prop-bet hardway" data-bet="hardway_10">
+                                        <div class="prop-label">HARD 10</div>
+                                        <div class="dice-combo">5-5</div>
+                                        <div class="prop-payout">7:1</div>
+                                        <div class="bet-chips-container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="one-roll-section">
+                                <div class="prop-bet" data-bet="any_seven">
+                                    <div class="prop-label">ANY 7</div>
+                                    <div class="prop-payout">4:1</div>
+                                    <div class="bet-chips-container"></div>
+                                </div>
+                                <div class="prop-bet" data-bet="any_craps">
+                                    <div class="prop-label">ANY CRAPS</div>
+                                    <div class="prop-payout">7:1</div>
+                                    <div class="bet-chips-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Field Bet -->
+                    <div class="bet-area field-bet" data-bet="field">
+                        <div class="bet-label">FIELD</div>
+                        <div class="field-numbers">
+                            <span class="field-num special">2</span>
+                            <span class="field-num">3</span>
+                            <span class="field-num">4</span>
+                            <span class="field-num">9</span>
+                            <span class="field-num">10</span>
+                            <span class="field-num">11</span>
+                            <span class="field-num special">12</span>
+                        </div>
+                        <div class="field-payout">2 and 12 Pay Double</div>
+                        <div class="bet-chips-container"></div>
+                    </div>
+
+                    <!-- Pass Line -->
+                    <div class="bet-area pass-line" data-bet="pass_line">
+                        <div class="bet-label">PASS LINE</div>
+                        <div class="bet-chips-container"></div>
+                    </div>
+
+                    <!-- Pass Line Odds (behind the line) -->
+                    <div class="bet-area pass-odds" data-bet="pass_odds">
+                        <div class="bet-label">ODDS</div>
+                        <div class="bet-subtext" id="odds-subtext">Point Required</div>
+                        <div class="bet-chips-container"></div>
+                    </div>
+
+                    <!-- Point Marker -->
+                    <div class="point-marker" id="point-marker">
+                        <div class="marker-text">ON</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chip Selector -->
+            <div class="chip-selector">
+                <div class="chip-selector-label">SELECT CHIP VALUE:</div>
+                <div class="chip-tray">
+                    <div class="chip" data-value="1">
+                        <div class="chip-inner chip-1">
+                            <span class="chip-value">$1</span>
+                        </div>
+                    </div>
+                    <div class="chip" data-value="5">
+                        <div class="chip-inner chip-5">
+                            <span class="chip-value">$5</span>
+                        </div>
+                    </div>
+                    <div class="chip selected" data-value="10">
+                        <div class="chip-inner chip-10">
+                            <span class="chip-value">$10</span>
+                        </div>
+                    </div>
+                    <div class="chip" data-value="25">
+                        <div class="chip-inner chip-25">
+                            <span class="chip-value">$25</span>
+                        </div>
+                    </div>
+                    <div class="chip" data-value="100">
+                        <div class="chip-inner chip-100">
+                            <span class="chip-value">$100</span>
+                        </div>
+                    </div>
+                    <div class="chip" data-value="500">
+                        <div class="chip-inner chip-500">
+                            <span class="chip-value">$500</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chip-instructions">Click a chip, then click on the table to place bet</div>
+            </div>
+        </div>
+
+        <!-- Right Column - Side Panels -->
+        <div class="side-panels">
+            <div class="panel players-panel">
+                <div class="panel-header">PLAYERS</div>
+                <div class="panel-content" id="players-list"></div>
+            </div>
+
+            <div class="panel bets-panel">
+                <div class="panel-header">YOUR BETS</div>
+                <div class="panel-content" id="active-bets-list"></div>
+            </div>
+
+            <div class="panel rolls-panel">
+                <div class="panel-header">RECENT ROLLS</div>
+                <div class="panel-content" id="log-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Display -->
+    <div id="message-banner" class="message-banner hidden"></div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>

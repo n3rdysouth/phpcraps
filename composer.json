@@ -1,0 +1,14 @@
+{
+    "name": "phpcraps/craps-game",
+    "description": "Multiplayer PHP Craps Game",
+    "type": "project",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Craps\\Game\\": "src/Game/",
+            "Craps\\Database\\": "src/Database/"
+        }
+    }
+}

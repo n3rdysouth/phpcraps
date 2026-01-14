@@ -1,0 +1,39 @@
+# Caddyfile for Docker deployment
+# Single Caddy instance handles both HTTP and WebSocket on port 8000
+
+:8000 {
+    # Logging with access log enabled
+    log {
+        output stdout
+        level DEBUG
+        format json
+    }
+
+    # Explicit route ordering
+    route {
+        # 1. WebSocket endpoint at /ws - FIRST PRIORITY
+        @websocket path /ws*
+        handle @websocket {
+            reverse_proxy php:8080
+        }
+
+        #  2. PHP files via FastCGI - SECOND PRIORITY
+        @php path *.php
+        handle @php {
+            root * /var/www/html/public
+            php_fastcgi php:9000
+        }
+
+        # 3. Static files - LAST PRIORITY (fallback)
+        handle {
+            root * /var/www/html/public
+            encode gzip
+            file_server
+            header {
+                X-Content-Type-Options "nosniff"
+                X-XSS-Protection "1; mode=block"
+                X-Frame-Options "SAMEORIGIN"
+            }
+        }
+    }
+}
